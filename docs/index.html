@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Albion Trade Ledger</title>
+<meta name="description" content="Live Albion Online (Americas) market dashboard: refining, crafting, flipping, gathering, risk and progress.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-row">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">⚖</span>
+      <div>
+        <h1>Albion Trade Ledger</h1>
+        <p class="sub">Americas market · prices from the Albion Online Data Project</p>
+      </div>
+    </div>
+    <div class="quick">
+      <label class="switch"><input type="checkbox" id="set-premium"><span>Premium</span></label>
+      <label class="switch"><input type="checkbox" id="set-focus"><span>Use focus</span></label>
+      <span id="status" class="status" role="status">Prices not loaded yet</span>
+    </div>
+  </div>
+  <nav class="wrap tabs" aria-label="Sections">
+    <button data-tab="start" class="on">Start</button>
+    <button data-tab="refine">Refining</button>
+    <button data-tab="craft">Crafting</button>
+    <button data-tab="flip">Flipping</button>
+    <button data-tab="gather">Gathering</button>
+    <button data-tab="risk">Risk &amp; routes</button>
+    <button data-tab="track">Tracker</button>
+  </nav>
+</header>
+
+<main class="wrap">
+
+<!-- START -->
+<section id="tab-start" class="tab on">
+  <div class="grid2">
+    <div class="panel">
+      <h2>Your setup</h2>
+      <p class="hint">Saved on this device. Every table uses these numbers.</p>
+      <div class="form">
+        <label for="set-capital">Silver you can work with</label>
+        <input id="set-capital" type="number" min="0" step="10000" inputmode="numeric">
+        <label for="set-maxtier">Highest tier you can craft or refine</label>
+        <select id="set-maxtier">
+          <option value="4">T4</option><option value="5">T5</option><option value="6">T6</option>
+          <option value="7">T7</option><option value="8">T8</option>
+        </select>
+        <label for="set-risk">Risk you will take</label>
+        <select id="set-risk">
+          <option value="safe">Safe zones only (no Caerleon, no Black Market)</option>
+          <option value="some">Some risk (short red-zone runs)</option>
+          <option value="full">Full risk (Caerleon, Black Market, black zones)</option>
+        </select>
+        <label for="set-maxage">Ignore prices older than</label>
+        <select id="set-maxage">
+          <option value="2">2 hours</option><option value="6">6 hours</option>
+          <option value="12">12 hours</option><option value="24">24 hours</option><option value="72">3 days</option>
+        </select>
+      </div>
+      <p class="hint">To find your tier: open the Destiny Board in game (default key <kbd>N</kbd>). Each crafting and refining line shows the highest tier you have unlocked.</p>
+    </div>
+    <div class="panel">
+      <h2>New character or keep your old one?</h2>
+      <table class="plain">
+        <thead><tr><th></th><th>Keep current</th><th>Start new</th></tr></thead>
+        <tbody>
+          <tr><th>Destiny Board</th><td>Keeps every unlocked tier and spec. Spec lowers focus cost and raises crafted quality.</td><td>Starts at zero. Expect T4–T5 for the first weeks.</td></tr>
+          <tr><th>Silver and items</th><td>Whatever is in your banks is still there, but stuck in the city where you left it.</td><td>Nothing. The plan below starts from 0.</td></tr>
+          <tr><th>Home city</th><td>Your banks decide it for you.</td><td>You choose freely. Pick one refining city and specialize.</td></tr>
+          <tr><th>Best if</th><td>You already have T5+ unlocked in any gathering, refining or crafting line.</td><td>Your old character is under T4 everywhere, or you want a clean ledger to measure progress.</td></tr>
+        </tbody>
+      </table>
+      <p class="hint">Quick test: log into the old character and press <kbd>N</kbd>. If anything is T5 or higher, keep it.</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Starter plan, 0 to 1M silver</h2>
+    <ol class="steps" id="starter-plan">
+      <li><b>Gather T3–T4 in blue and yellow zones.</b> Check the Gathering tab for which raw resource pays best right now, then gather that one. Selling raw is fine at this stage.</li>
+      <li><b>Refine what you gather in that resource's bonus city.</b> Ore in Thetford, hide in Martlock, fiber in Lymhurst, wood in Fort Sterling, stone in Bridgewatch. The Refining tab shows whether refining beats selling raw today.</li>
+      <li><b>Turn on focus when you have Premium.</b> Refining with focus in the bonus city returns about half your materials. It is the most reliable early profit.</li>
+      <li><b>Craft one item line in its bonus city.</b> Use the Crafting tab, filter to your tier, and pick items that show profit <i>and</i> sell every day (open an item to see its daily sales).</li>
+      <li><b>Flip between royal cities only.</b> Keep the risk setting on Safe until your silver passes about 1M. Then read the Risk tab before your first Caerleon run.</li>
+      <li><b>Log your silver once a day in the Tracker.</b> After a week you will see which method actually paid.</li>
+    </ol>
+  </div>
+
+  <div class="panel">
+    <h2>What the numbers assume</h2>
+    <ul class="assume" id="assumptions"></ul>
+  </div>
+</section>
+
+<!-- REFINING -->
+<section id="tab-refine" class="tab">
+  <div class="toolbar">
+    <h2>Refining profit</h2>
+    <label for="ref-type">Resource</label>
+    <select id="ref-type"><option value="">All</option><option>ORE</option><option>HIDE</option><option>FIBER</option><option>WOOD</option><option>ROCK</option></select>
+    <label for="ref-buy">Buy inputs</label>
+    <select id="ref-buy"><option value="refcity">In the refining city</option><option value="any">Cheapest city (you carry it)</option></select>
+    <button class="primary" id="ref-load">Load prices</button>
+  </div>
+  <p class="hint">One unit of refined output. Material cost is reduced by the resource return rate. “Quick sale” fills an existing buy order. “Listed” posts a sell order at the current lowest price and waits.</p>
+  <div class="table-wrap"><table id="ref-table" class="data"></table></div>
+</section>
+
+<!-- CRAFTING -->
+<section id="tab-craft" class="tab">
+  <div class="toolbar">
+    <h2>Crafting profit</h2>
+    <label for="cr-tier">Tier</label>
+    <select id="cr-tier"><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select>
+    <label for="cr-cat">Type</label>
+    <select id="cr-cat"><option value="">All</option></select>
+    <label class="switch"><input type="checkbox" id="cr-noart" checked><span>Hide artifact items</span></label>
+    <button class="primary" id="cr-load">Load prices</button>
+  </div>
+  <p class="hint">Normal quality, no enchantment. Crafted in the item's bonus city. Inputs bought at the lowest price in that city. Artifacts are never returned. Listings priced more than double the typical price elsewhere are ignored as outliers. Click a row for daily sales history.</p>
+  <div class="table-wrap"><table id="cr-table" class="data"></table></div>
+</section>
+
+<!-- FLIPPING -->
+<section id="tab-flip" class="tab">
+  <div class="toolbar">
+    <h2>Flipping</h2>
+    <label for="fl-set">Items</label>
+    <select id="fl-set">
+      <option value="refined">Refined resources</option>
+      <option value="raw">Raw resources</option>
+      <option value="gear">Gear at your tier</option>
+    </select>
+    <label for="fl-mode">Sell by</label>
+    <select id="fl-mode"><option value="quick">Quick sale (buy orders)</option><option value="list">Listing a sell order</option></select>
+    <button class="primary" id="fl-load">Load prices</button>
+  </div>
+  <p class="hint">Buy from the lowest sell order in one city, sell in another. Your risk setting filters routes. Profit is per unit, after tax and fees. “Units” is how many you can buy with a quarter of your silver, capped at one stack (999) because the price service cannot see how many are actually for sale. Open a row to check daily sales before you commit.</p>
+  <div class="table-wrap"><table id="fl-table" class="data"></table></div>
+</section>
+
+<!-- GATHERING -->
+<section id="tab-gather" class="tab">
+  <div class="toolbar">
+    <h2>What to gather</h2>
+    <label for="ga-tier">Up to tier</label>
+    <select id="ga-tier"><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select>
+    <button class="primary" id="ga-load">Load prices</button>
+  </div>
+  <p class="hint">Best price for each raw resource across the royal cities and Brecilien. “Per kg” matters because your bag and mount weight is the real limit on a gathering trip.</p>
+  <div class="table-wrap"><table id="ga-table" class="data"></table></div>
+</section>
+
+<!-- RISK -->
+<section id="tab-risk" class="tab">
+  <div class="grid2">
+    <div class="panel">
+      <h2>Is this run worth the risk?</h2>
+      <div class="form">
+        <label for="rk-cargo">Cargo value (silver)</label><input id="rk-cargo" type="number" min="0" step="10000" value="300000">
+        <label for="rk-gear">Your gear + mount value</label><input id="rk-gear" type="number" min="0" step="10000" value="100000">
+        <label for="rk-profit">Expected profit if you arrive</label><input id="rk-profit" type="number" min="0" step="1000" value="60000">
+        <label for="rk-p">Chance you get caught (%)</label><input id="rk-p" type="range" min="0" max="60" value="10"><output id="rk-p-out" for="rk-p">10%</output>
+      </div>
+      <div id="rk-result" class="verdict"></div>
+    </div>
+    <div class="panel">
+      <h2>How much to carry</h2>
+      <p>Carry only what you can lose without starting over. With your silver set to <b id="rk-cap">—</b>:</p>
+      <table class="plain" id="rk-carry"></table>
+      <p class="hint">These are bankroll limits, the same rule a poker player uses: no single loss should take more than a small share of what you have.</p>
+    </div>
+  </div>
+  <div class="panel" id="route-guide">
+    <h2>Zones and routes</h2>
+    <div id="route-guide-body"><p class="hint">Route guide loading…</p></div>
+  </div>
+</section>
+
+<!-- TRACKER -->
+<section id="tab-track" class="tab">
+  <div class="grid2">
+    <div class="panel">
+      <h2>Log your silver</h2>
+      <form id="tr-form" class="form">
+        <label for="tr-date">Date</label><input id="tr-date" type="date">
+        <label for="tr-silver">Total silver (banks + inventory)</label><input id="tr-silver" type="number" min="0" step="1000" required>
+        <label for="tr-method">Main activity</label>
+        <select id="tr-method"><option>Gathering</option><option>Refining</option><option>Crafting</option><option>Flipping</option><option>Black Market run</option><option>PvE / dungeons</option><option>Other</option></select>
+        <label for="tr-note">Note</label><input id="tr-note" type="text" maxlength="120" placeholder="What worked, what didn't">
+        <button class="primary" type="submit">Add entry</button>
+      </form>
+      <p class="hint">Stored in this browser only. Use Export and Import to move it between your Mac, iPad and phone.</p>
+      <div class="row">
+        <button id="tr-export">Export</button>
+        <button id="tr-import-btn">Import</button>
+      </div>
+      <textarea id="tr-io" rows="4" hidden placeholder="Paste exported data here, then press Import again"></textarea>
+    </div>
+    <div class="panel">
+      <h2>Progress</h2>
+      <div id="tr-chart" class="chart"></div>
+      <div id="tr-summary"></div>
+    </div>
+  </div>
+  <div class="panel"><div class="table-wrap"><table id="tr-table" class="data"></table></div></div>
+</section>
+
+</main>
+
+<dialog id="hist">
+  <form method="dialog"><button class="close" aria-label="Close">✕</button></form>
+  <h3 id="hist-title"></h3>
+  <div id="hist-body"></div>
+</dialog>
+
+<footer class="wrap foot">
+  <p>Market data: <a href="https://www.albion-online-data.com/" rel="noopener">Albion Online Data Project</a> (crowd-sourced; a price is only as fresh as the last player who looked). Item data: <a href="https://github.com/ao-data/ao-bin-dumps" rel="noopener">ao-bin-dumps</a>, built <span id="built"></span>. Not affiliated with Sandbox Interactive. This tool only reads data and never touches the game.</p>
+</footer>
+<script src="guide.js?v=2"></script>
+<script src="app.js?v=2"></script>
+</body>
+</html>
